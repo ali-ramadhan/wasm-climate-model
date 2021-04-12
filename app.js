@@ -64,33 +64,44 @@ scene.add(sphere);
 const n_vertices = geometry.attributes.position.count;
 
 const positionAttribute = geometry.getAttribute('position');
-const colors = [];
 
-for (let n = 0; n < n_vertices; n++) {
-    const vertex = new THREE.Vector3();
-    vertex.fromBufferAttribute(positionAttribute, n);
+function updateVertexColors(time) {
+    const colors = [];
 
-    const vertexSpherical = new THREE.Spherical();
-    vertexSpherical.setFromVector3(vertex);
+    for (let n = 0; n < n_vertices; n++) {
+        const vertex = new THREE.Vector3();
+        vertex.fromBufferAttribute(positionAttribute, n);
 
-    const phi = vertexSpherical.phi;
-    const theta = vertexSpherical.theta;
+        const vertexSpherical = new THREE.Spherical();
+        vertexSpherical.setFromVector3(vertex);
 
-    const functionValue = (1 + Math.sin(phi)**2 * Math.cos(2*theta)) / 2;
+        const phi = vertexSpherical.phi;
+        const theta = vertexSpherical.theta;
 
-    // console.log(`vertex ${n} = (ϕ=${phi}, θ=${theta}) -> f = ${functionValue}`);
+        const functionValue = (1 + Math.sin(phi)**2 * Math.cos(2*theta - time)) / 2;
 
-    const vertexColor = interpolateLinearly(functionValue, seismic);
+        // console.log(`vertex ${n} = (ϕ=${phi}, θ=${theta}) -> f = ${functionValue}`);
 
-    colors.push(...vertexColor);
+        const vertexColor = interpolateLinearly(functionValue, seismic);
+
+        colors.push(...vertexColor);
+    }
+
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 }
 
-geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+updateVertexColors(0)
 
-controls = new THREE.OrbitControls(camera, renderer.domElement);
+const startTime = new Date();
 
 var render = function () {
     requestAnimationFrame(render);
+
+    var endTime = new Date();
+    var timeDiff = endTime - startTime; // in ms
+    timeDiff /= 1000;
+
+    updateVertexColors(timeDiff)
 
     // sphere.rotation.x += 0.01;
     // sphere.rotation.y += 0.01;
@@ -102,11 +113,11 @@ var render = function () {
 
 render();
 
-function resizeWindow() {
+controls = new THREE.OrbitControls(camera, renderer.domElement);
 
+function resizeWindow() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
