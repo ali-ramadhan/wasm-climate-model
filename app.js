@@ -1,5 +1,19 @@
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive).
+ * The value is no lower than min (or the next integer greater than min
+ * if min isn't an integer) and no greater than max (or the next integer
+ * lower than max if max isn't an integer).
+ * Using Math.round() will give you a non-uniform distribution!
+ * Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#getting_a_random_integer_between_two_values
+ */
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 //
-// BASIC SETUP
+// Boilerplate setup
 //
 
 // Create an empty scene
@@ -21,26 +35,26 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 // Append Renderer to DOM
 document.body.appendChild(renderer.domElement);
 
-// ------------------------------------------------
-// FUN STARTS HERE
-// ------------------------------------------------
+//
+// Fun starts here!
+//
 
-// Create a Cube Mesh with basic material
-var geometry = new THREE.BoxGeometry(1, 1, 1);
-var material = new THREE.MeshBasicMaterial({ color: "#433F81" });
-var cube = new THREE.Mesh(geometry, material);
+var geometry = new THREE.SphereGeometry(2, 5, 5);
+var material = new THREE.MeshBasicMaterial({color: "#433F81", vertexColors: THREE.FaceColors});
+var sphere = new THREE.Mesh(geometry, material);
 
-// Add cube to Scene
-scene.add(cube);
+scene.add(sphere);
 
-// Render Loop
 var render = function () {
   requestAnimationFrame(render);
 
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  sphere.rotation.x += 0.01;
+  sphere.rotation.y += 0.01;
 
-  // Render the scene
+  var face_to_change = getRandomInt(0, geometry.faces.length);
+  geometry.faces[face_to_change].color.setRGB(Math.random(), Math.random(), Math.random());
+  geometry.colorsNeedUpdate = true;
+
   renderer.render(scene, camera);
 };
 
