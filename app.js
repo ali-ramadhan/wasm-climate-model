@@ -59,8 +59,16 @@ document.body.appendChild(renderer.domElement);
 //
 
 var geometry = new THREE.SphereGeometry(2, 5, 5);
-// var material = new THREE.MeshBasicMaterial({color: "#433F81", vertexColors: THREE.FaceColors});
-var material = new THREE.MeshBasicMaterial({color: 0xff0000});
+var material = new THREE.MeshBasicMaterial({color: 0xff0000, vertexColors: true});
+
+const n_vertices = geometry.attributes.position.count;
+
+const colors = [];
+for (let n = 0; n < n_vertices; n++) {
+  colors.push(Math.random(), Math.random(), Math.random());
+}
+geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
 var sphere = new THREE.Mesh(geometry, material);
 
 scene.add(sphere);
@@ -69,22 +77,21 @@ stats = createStats();
 document.body.appendChild(stats.domElement);
 
 var render = function () {
-  requestAnimationFrame(render);
+    requestAnimationFrame(render);
 
-  sphere.rotation.x += 0.01;
-  sphere.rotation.y += 0.01;
+    sphere.rotation.x += 0.01;
+    sphere.rotation.y += 0.01;
 
-//   var face_to_change = getRandomInt(0, geometry.faces.length-1);
-//   geometry.faces[face_to_change].color.setRGB(Math.random(), Math.random(), Math.random());
-//   geometry.colorsNeedUpdate = true;
+    //   var face_to_change = getRandomInt(0, geometry.faces.length-1);
+    //   geometry.faces[face_to_change].color.setRGB(Math.random(), Math.random(), Math.random());
+    //   geometry.colorsNeedUpdate = true;
 
-  renderer.render(scene, camera);
+    renderer.render(scene, camera);
 
-  stats.update();
+    stats.update();
 };
 
 render();
-
 
 function resizeWindow() {
 
