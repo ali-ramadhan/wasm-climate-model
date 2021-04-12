@@ -29,7 +29,10 @@ function createStats() {
     stats.domElement.style.top = '0';
 
     return stats;
-  }
+}
+
+stats = createStats();
+document.body.appendChild(stats.domElement);
 
 //
 // Boilerplate setup
@@ -54,15 +57,34 @@ document.body.appendChild(renderer.domElement);
 
 var geometry = new THREE.SphereGeometry(2, 10, 10);
 var material = new THREE.MeshBasicMaterial({vertexColors: true});
-
-const n_vertices = geometry.attributes.position.count;
-
 var sphere = new THREE.Mesh(geometry, material);
 
 scene.add(sphere);
 
-stats = createStats();
-document.body.appendChild(stats.domElement);
+const n_vertices = geometry.attributes.position.count;
+
+const colors = [];
+for (let n = 0; n < n_vertices; n++) {
+  colors.push(Math.random(), Math.random(), Math.random());
+}
+geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+const positionAttribute = geometry.getAttribute('position');
+const colors2 = [];
+
+for (let n = 0; n < n_vertices; n++) {
+    const vertex = new THREE.Vector3();
+    vertex.fromBufferAttribute(positionAttribute, n);
+
+    const vertexSpherical = new THREE.Spherical()
+    vertexSpherical.setFromVector3(vertex)
+
+    // console.log(`vertex ${n} = (x=${vertex.x}, y=${vertex.y}, z=${vertex.z}) = (r=${vertexSpherical.radius}, ϕ=${vertexSpherical.phi}, θ=${vertexSpherical.theta})`)
+
+    colors2.push(Math.abs(Math.sin(vertexSpherical.phi)), 0, 0);
+}
+
+geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors2, 3));
 
 var render = function () {
     requestAnimationFrame(render);
@@ -70,15 +92,11 @@ var render = function () {
     sphere.rotation.x += 0.01;
     sphere.rotation.y += 0.01;
 
-    const colors = [];
-    for (let n = 0; n < n_vertices; n++) {
-      colors.push(Math.random(), Math.random(), Math.random());
-    }
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
-    //   var face_to_change = getRandomInt(0, geometry.faces.length-1);
-    //   geometry.faces[face_to_change].color.setRGB(Math.random(), Math.random(), Math.random());
-    //   geometry.colorsNeedUpdate = true;
+    // const colors = [];
+    // for (let n = 0; n < n_vertices; n++) {
+    //   colors.push(Math.random(), Math.random(), Math.random());
+    // }
+    // geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
     renderer.render(scene, camera);
 
