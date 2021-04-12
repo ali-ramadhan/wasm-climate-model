@@ -1,3 +1,7 @@
+//
+// Useful functions
+//
+
 /**
  * Returns a random integer between min (inclusive) and max (inclusive).
  * The value is no lower than min (or the next integer greater than min
@@ -11,6 +15,21 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+//
+// Stats monitor
+//
+
+function createStats() {
+    var stats = new Stats();
+    stats.setMode(0);
+
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0';
+    stats.domElement.style.top = '0';
+
+    return stats;
+  }
 
 //
 // Boilerplate setup
@@ -46,6 +65,9 @@ var sphere = new THREE.Mesh(geometry, material);
 
 scene.add(sphere);
 
+stats = createStats();
+document.body.appendChild(stats.domElement);
+
 var render = function () {
   requestAnimationFrame(render);
 
@@ -57,6 +79,8 @@ var render = function () {
 //   geometry.colorsNeedUpdate = true;
 
   renderer.render(scene, camera);
+
+  stats.update();
 };
 
 render();
