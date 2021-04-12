@@ -103,6 +103,30 @@ function updateVertexColors(time) {
 updateVertexColors(0)
 
 //
+// dat.gui controls
+//
+
+// Options to be added to the GUI
+
+var options = {
+    omegax: 0.0,
+    omegay: 0.0,
+    stop: function() {
+        this.omegax = 0.0;
+        this.omegay = 0.0;
+    }
+};
+
+var gui = new dat.GUI();
+
+var omega = gui.addFolder('Rotation speed');
+omega.add(options, 'omegax', -0.2, 0.2).step(0.01).name('X').listen();
+omega.add(options, 'omegay', -0.2, 0.2).step(0.01).name('Y').listen();
+omega.open();
+
+gui.add(options, 'stop');
+
+//
 // Rendering loop
 //
 
@@ -117,8 +141,8 @@ var render = function () {
 
     updateVertexColors(timeDiff)
 
-    // sphere.rotation.x += 0.01;
-    // sphere.rotation.y += 0.01;
+    sphere.rotation.x += options.omegax;
+    sphere.rotation.y += options.omegay;
 
     renderer.render(scene, camera);
 
