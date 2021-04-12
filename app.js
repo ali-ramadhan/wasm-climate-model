@@ -63,28 +63,24 @@ scene.add(sphere);
 
 const n_vertices = geometry.attributes.position.count;
 
-const colors = [];
-for (let n = 0; n < n_vertices; n++) {
-  colors.push(Math.random(), Math.random(), Math.random());
-}
-geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-
 const positionAttribute = geometry.getAttribute('position');
-const colors2 = [];
+const colors = [];
 
 for (let n = 0; n < n_vertices; n++) {
     const vertex = new THREE.Vector3();
     vertex.fromBufferAttribute(positionAttribute, n);
 
-    const vertexSpherical = new THREE.Spherical()
-    vertexSpherical.setFromVector3(vertex)
+    const vertexSpherical = new THREE.Spherical();
+    vertexSpherical.setFromVector3(vertex);
 
-    // console.log(`vertex ${n} = (x=${vertex.x}, y=${vertex.y}, z=${vertex.z}) = (r=${vertexSpherical.radius}, ϕ=${vertexSpherical.phi}, θ=${vertexSpherical.theta})`)
+    console.log(`vertex ${n} = (r=${vertexSpherical.radius}, ϕ=${vertexSpherical.phi}, θ=${vertexSpherical.theta})`);
 
-    colors2.push(Math.abs(Math.sin(vertexSpherical.phi)), 0, 0);
+    const vertexColor = interpolateLinearly(vertexSpherical.phi / Math.PI, seismic);
+
+    colors.push(...vertexColor);
 }
 
-geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors2, 3));
+geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
 var render = function () {
     requestAnimationFrame(render);
