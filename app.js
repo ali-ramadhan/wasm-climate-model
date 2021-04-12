@@ -35,39 +35,27 @@ function createStats() {
 // Boilerplate setup
 //
 
-// Create an empty scene
 var scene = new THREE.Scene();
 
-// Create a basic perspective camera
 var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight);
 camera.position.z = 4;
 
-// Create a renderer with Antialiasing
 var renderer = new THREE.WebGLRenderer({antialias: true});
 
-// Configure renderer clear color
-renderer.setClearColor("#000000");
+renderer.setClearColor(0x000000);
 
-// Configure renderer size
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-// Append Renderer to DOM
 document.body.appendChild(renderer.domElement);
 
 //
 // Fun starts here!
 //
 
-var geometry = new THREE.SphereGeometry(2, 5, 5);
-var material = new THREE.MeshBasicMaterial({color: 0xff0000, vertexColors: true});
+var geometry = new THREE.SphereGeometry(2, 10, 10);
+var material = new THREE.MeshBasicMaterial({vertexColors: true});
 
 const n_vertices = geometry.attributes.position.count;
-
-const colors = [];
-for (let n = 0; n < n_vertices; n++) {
-  colors.push(Math.random(), Math.random(), Math.random());
-}
-geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
 var sphere = new THREE.Mesh(geometry, material);
 
@@ -81,6 +69,12 @@ var render = function () {
 
     sphere.rotation.x += 0.01;
     sphere.rotation.y += 0.01;
+
+    const colors = [];
+    for (let n = 0; n < n_vertices; n++) {
+      colors.push(Math.random(), Math.random(), Math.random());
+    }
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
     //   var face_to_change = getRandomInt(0, geometry.faces.length-1);
     //   geometry.faces[face_to_change].color.setRGB(Math.random(), Math.random(), Math.random());
