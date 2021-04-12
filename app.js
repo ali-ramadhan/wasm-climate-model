@@ -35,7 +35,7 @@ var stats = createStats();
 document.body.appendChild(stats.domElement);
 
 //
-// Boilerplate setup
+// Boilerplate three.js setup
 //
 
 var scene = new THREE.Scene();
@@ -52,7 +52,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 //
-// Fun starts here!
+// Create sphere
 //
 
 var geometry = new THREE.SphereGeometry(2, 50, 50);
@@ -60,6 +60,10 @@ var material = new THREE.MeshBasicMaterial({vertexColors: true});
 var sphere = new THREE.Mesh(geometry, material);
 
 scene.add(sphere);
+
+//
+// Function that updates the color of the vertices
+//
 
 const n_vertices = geometry.attributes.position.count;
 
@@ -78,11 +82,12 @@ function updateVertexColors(time) {
         const phi = vertexSpherical.phi;
         const theta = vertexSpherical.theta;
 
+        // Function we want to plot. Should be between 0 and 1 for colormap to work out of the box.
         const functionValue = (1 + Math.sin(phi)**2 * Math.cos(2*theta - time)) / 2;
 
         // console.log(`vertex ${n} = (ϕ=${phi}, θ=${theta}) -> f = ${functionValue}`);
 
-        const vertexColor = interpolateLinearly(functionValue, seismic);
+        const vertexColor =  getColor(functionValue, seismic);
 
         colors.push(...vertexColor);
     }
@@ -91,6 +96,10 @@ function updateVertexColors(time) {
 }
 
 updateVertexColors(0)
+
+//
+// Rendering loop
+//
 
 const startTime = new Date();
 
@@ -112,6 +121,10 @@ var render = function () {
 };
 
 render();
+
+//
+// Controls and automatic window resizing
+//
 
 controls = new THREE.OrbitControls(camera, renderer.domElement);
 
