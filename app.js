@@ -31,7 +31,7 @@ function createStats() {
     return stats;
 }
 
-stats = createStats();
+var stats = createStats();
 document.body.appendChild(stats.domElement);
 
 //
@@ -55,7 +55,7 @@ document.body.appendChild(renderer.domElement);
 // Fun starts here!
 //
 
-var geometry = new THREE.SphereGeometry(2, 10, 10);
+var geometry = new THREE.SphereGeometry(2, 50, 50);
 var material = new THREE.MeshBasicMaterial({vertexColors: true});
 var sphere = new THREE.Mesh(geometry, material);
 
@@ -73,9 +73,14 @@ for (let n = 0; n < n_vertices; n++) {
     const vertexSpherical = new THREE.Spherical();
     vertexSpherical.setFromVector3(vertex);
 
-    console.log(`vertex ${n} = (r=${vertexSpherical.radius}, ϕ=${vertexSpherical.phi}, θ=${vertexSpherical.theta})`);
+    const phi = vertexSpherical.phi;
+    const theta = vertexSpherical.theta;
 
-    const vertexColor = interpolateLinearly(vertexSpherical.phi / Math.PI, seismic);
+    const functionValue = (1 + Math.sin(phi)**2 * Math.cos(2*theta)) / 2;
+
+    // console.log(`vertex ${n} = (ϕ=${phi}, θ=${theta}) -> f = ${functionValue}`);
+
+    const vertexColor = interpolateLinearly(functionValue, seismic);
 
     colors.push(...vertexColor);
 }
@@ -87,12 +92,6 @@ var render = function () {
 
     sphere.rotation.x += 0.01;
     sphere.rotation.y += 0.01;
-
-    // const colors = [];
-    // for (let n = 0; n < n_vertices; n++) {
-    //   colors.push(Math.random(), Math.random(), Math.random());
-    // }
-    // geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
     renderer.render(scene, camera);
 
