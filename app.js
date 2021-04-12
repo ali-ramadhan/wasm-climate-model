@@ -87,11 +87,13 @@ for (let n = 0; n < n_vertices; n++) {
 
 geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
+controls = new THREE.OrbitControls(camera, renderer.domElement);
+
 var render = function () {
     requestAnimationFrame(render);
 
-    sphere.rotation.x += 0.01;
-    sphere.rotation.y += 0.01;
+    // sphere.rotation.x += 0.01;
+    // sphere.rotation.y += 0.01;
 
     renderer.render(scene, camera);
 
