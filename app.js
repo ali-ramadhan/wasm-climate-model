@@ -20,11 +20,11 @@ function getRandomInt(min, max) {
 var scene = new THREE.Scene();
 
 // Create a basic perspective camera
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000);
+var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight);
 camera.position.z = 4;
 
 // Create a renderer with Antialiasing
-var renderer = new THREE.WebGLRenderer({antialias:true});
+var renderer = new THREE.WebGLRenderer({antialias: true});
 
 // Configure renderer clear color
 renderer.setClearColor("#000000");
@@ -40,7 +40,8 @@ document.body.appendChild(renderer.domElement);
 //
 
 var geometry = new THREE.SphereGeometry(2, 5, 5);
-var material = new THREE.MeshBasicMaterial({color: "#433F81", vertexColors: THREE.FaceColors});
+// var material = new THREE.MeshBasicMaterial({color: "#433F81", vertexColors: THREE.FaceColors});
+var material = new THREE.MeshBasicMaterial({color: 0xff0000});
 var sphere = new THREE.Mesh(geometry, material);
 
 scene.add(sphere);
@@ -51,9 +52,9 @@ var render = function () {
   sphere.rotation.x += 0.01;
   sphere.rotation.y += 0.01;
 
-  var face_to_change = getRandomInt(0, geometry.faces.length);
-  geometry.faces[face_to_change].color.setRGB(Math.random(), Math.random(), Math.random());
-  geometry.colorsNeedUpdate = true;
+//   var face_to_change = getRandomInt(0, geometry.faces.length-1);
+//   geometry.faces[face_to_change].color.setRGB(Math.random(), Math.random(), Math.random());
+//   geometry.colorsNeedUpdate = true;
 
   renderer.render(scene, camera);
 };
