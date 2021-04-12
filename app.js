@@ -69,9 +69,9 @@ const n_vertices = geometry.attributes.position.count;
 
 const positionAttribute = geometry.getAttribute('position');
 
-function updateVertexColors(time) {
-    const colors = [];
+const vertexColorsBuffer = new THREE.Float32BufferAttribute(new Float32Array(3 * n_vertices), 3);
 
+function updateVertexColors(time) {
     for (let n = 0; n < n_vertices; n++) {
         const vertex = new THREE.Vector3();
         vertex.fromBufferAttribute(positionAttribute, n);
@@ -89,10 +89,15 @@ function updateVertexColors(time) {
 
         const vertexColor =  getColor(functionValue, seismic);
 
-        colors.push(...vertexColor);
+        vertexColorsBuffer.array[3*n]   = vertexColor[0] // R
+        vertexColorsBuffer.array[3*n+1] = vertexColor[1] // G
+        vertexColorsBuffer.array[3*n+2] = vertexColor[2] // B
     }
 
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute('color', vertexColorsBuffer);
+    geometry.attributes.color.needsUpdate = true
+
+    return
 }
 
 updateVertexColors(0)
